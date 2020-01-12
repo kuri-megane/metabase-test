@@ -1,0 +1,34 @@
+version: '3.1'
+
+services:
+
+  dbserver:
+    image: mysql:5
+    ports:
+      - 13306:3306
+    hostname: dbserver
+    container_name: dbserver
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: DHNnGJtf2sX3
+      MYSQL_DATABASE: metabase_test
+      MYSQL_USER: metabase_test
+      MYSQL_PASSWORD: metabase_test
+
+  app:
+    image: kurimegane/metabase_test:latest
+    container_name: app
+    ports:
+      - 8080:8080
+    links:
+      - dbserver
+    environment:
+      - DISPLAY=$DISPLAY
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+
+      # 以下にはこのレポジトリをクローンしたローカルのパスを記入する．
+      - /home/megane/Dropbox/metabase-test:/home/metabase_test/app
+    tty: true
+    depends_on:
+      - dbserver
