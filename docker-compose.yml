@@ -5,8 +5,9 @@ services:
   dbserver:
     image: mysql:5
     ports:
-      - 13306:3306
+      - 3306:3306
     hostname: dbserver
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci
     container_name: dbserver
     restart: always
     environment:
@@ -22,13 +23,14 @@ services:
       - 8080:8080
     links:
       - dbserver
-    environment:
-      - DISPLAY=$DISPLAY
-    volumes:
-      - /tmp/.X11-unix:/tmp/.X11-unix
-
-      # 以下にはこのレポジトリをクローンしたローカルのパスを記入する．
-      - /home/megane/Dropbox/metabase-test:/home/metabase_test/app
     tty: true
     depends_on:
       - dbserver
+
+  metabase:
+    container_name: metabase
+    image: metabase/metabase
+    ports:
+      - "3000:3000"
+    links:
+      - app
